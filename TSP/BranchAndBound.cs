@@ -35,7 +35,7 @@ namespace TSP
 
         private double CalculateGreatestLBDifference(Matrix matrix)
         {
-            double currentGreatestLBDiff = double.NegativeInfinity;
+            double currentGreatestLbDiff = double.NegativeInfinity;
 
             for (int i = 0; i < matrix.GetMatrix().Length; i++)
             {
@@ -43,33 +43,33 @@ namespace TSP
                 {
                     if (matrix.GetMatrix()[i, j] == 0)
                     {
-                        int lbDiff = getLBDiff(EdgeEffects, matrix);
+                        int lbDiff = getLbDiff(i,j, matrix);
 
-                        if (lbDiff > currentGreatestLBDiff)
+                        if (lbDiff > currentGreatestLbDiff)
                         {
-                            currentGreatestLBDiff = lbDiff;
+                            currentGreatestLbDiff = lbDiff;
                         }
                     }
                 }
             }
 
-            return currentGreatestLBDiff ;
+            return currentGreatestLbDiff;
         }
 
         // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN!!
-        private Matrix[] ReduceChildren(int edge, Matrix matrix)
+        private Matrix[] ReduceChildren(int row, int col, Matrix matrix)
         {
             Matrix includeMatrix = new Matrix(matrix);
 
             for (int i = 0; i < includeMatrix.GetMatrix().Length; i++)
             {
-                includeMatrix.GetMatrix()[edge, i] = double.PositiveInfinity;
-                includeMatrix.GetMatrix()[i, edge] = double.PositiveInfinity;
+                includeMatrix.GetMatrix()[row, i] = double.PositiveInfinity;
+                includeMatrix.GetMatrix()[i, col] = double.PositiveInfinity;
             }
 
             Matrix excludeMatrix = new Matrix(matrix);
 
-            excludeMatrix[edge.row][edge.col] =...;
+            excludeMatrix.GetMatrix()[row, col] = double.PositiveInfinity;
 
             Matrix[] includeExcludeArray = new Matrix[2];
             includeExcludeArray[0] = includeMatrix;
