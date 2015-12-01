@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NetworkRouting
+namespace TSP
 {
     class PQ
     {
@@ -17,33 +17,33 @@ namespace NetworkRouting
         }
 
         // MARK: PRIMARY METHODS
-        public void Add(int lookupIndex, double pathCost, int backPointer)
+        public void Add(Matrix matrix, int lookupIndex, int backPointer)
         {
             lookupTable[lookupIndex].heapIndex = heap.Count;
-            heap.Add(new HeapNode(pathCost, lookupIndex, backPointer));
+            heap.Add(new HeapNode(matrix, matrix.GetReductionCost(), lookupIndex, backPointer));
 
             BubbleUp(heap.Count - 1);
         }
 
-        public int PopMin()
+        public HeapNode PopMin()
         {
             HeapNode minNode = heap[0];
             heap[0] = heap[heap.Count - 1];
             lookupTable[heap[0].LOOKUPINDEX].heapIndex = 0;
-            lookupTable[heap[0].LOOKUPINDEX].pathCost = minNode.pathCost;
+            lookupTable[heap[0].LOOKUPINDEX].pathCost = minNode.ReductionCost;
 
             heap.RemoveAt(heap.Count - 1);
             lookupTable[minNode.LOOKUPINDEX].backPointer = minNode.backPointer;
 
             BubbleDown(0);
 
-            return minNode.LOOKUPINDEX;
+            return minNode;
         }
 
         public void DecreaseKey(int lookupTableIndex, double newPathValue, int newBackPointer)
         {
             int heapIndex = lookupTable[lookupTableIndex].heapIndex;
-            heap[heapIndex].pathCost = newPathValue;
+            heap[heapIndex].ReductionCost = newPathValue;
             heap[lookupTable[lookupTableIndex].heapIndex].backPointer = newBackPointer;
 
             BubbleUp(heapIndex);
@@ -58,7 +58,7 @@ namespace NetworkRouting
         {
             if (NodeIsAdded(lookupIndex))
             {
-                return heap[lookupTable[lookupIndex].heapIndex].pathCost;
+                return heap[lookupTable[lookupIndex].heapIndex].ReductionCost;
             }
 
             return -1;
@@ -98,7 +98,7 @@ namespace NetworkRouting
 
             while (currentIndex != 0 && parentValue > currentValue)
             {
-                currentValue = heap[currentIndex].pathCost;
+                currentValue = heap[currentIndex].ReductionCost;
                 parentValue = GetParentValue(currentIndex);
 
                 if (currentValue < parentValue)
@@ -112,15 +112,15 @@ namespace NetworkRouting
         private void BubbleDown(int index)
         {
             int currentIndex = index;
-            int minChildIndex = -1;
+            int minChildIndex;
             double currentValue = double.MaxValue;
             double minChildValue = double.MinValue;
 
             while (HasLeftChild(currentIndex) && minChildValue < currentValue)
             {
-                currentValue = heap[currentIndex].pathCost;
+                currentValue = heap[currentIndex].ReductionCost;
                 minChildIndex = GetMinChildIndex(currentIndex);
-                minChildValue = heap[minChildIndex].pathCost;
+                minChildValue = heap[minChildIndex].ReductionCost;
 
                 if (currentValue > minChildValue)
                 {
@@ -145,7 +145,7 @@ namespace NetworkRouting
 
         public bool AllPathsIsFinished()
         {
-            return heap[0].pathCost == double.MaxValue;
+            return heap[0].ReductionCost == double.MaxValue;
         }
 
         // MARK: INDEX GETTER METHODS
@@ -178,7 +178,7 @@ namespace NetworkRouting
         private int GetMinChildIndex(int index)
         {
             double leftChildValue = double.MaxValue;
-            double rightChildValue = double.MaxValue;
+            double rightChildValue;
 
             if (HasLeftChild(index))
             {
@@ -206,17 +206,17 @@ namespace NetworkRouting
 
         private double GetParentValue(int index)
         {
-            return heap[GetParentIndex(index)].pathCost;
+            return heap[GetParentIndex(index)].ReductionCost;
         }
 
         private double GetLeftChildValue(int index)
         {
-            return heap[GetLeftChildIndex(index)].pathCost;
+            return heap[GetLeftChildIndex(index)].ReductionCost;
         }
 
         private double GetRightChildValue(int index)
         {
-            return heap[GetRightChildIndex(index)].pathCost;
+            return heap[GetRightChildIndex(index)].ReductionCost;
         }
     }
 }

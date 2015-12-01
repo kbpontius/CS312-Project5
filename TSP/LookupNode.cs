@@ -1,4 +1,4 @@
-﻿namespace NetworkRouting
+﻿namespace TSP
 {
     class LookupNode
     {
