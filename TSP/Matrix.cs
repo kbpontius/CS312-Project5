@@ -7,19 +7,41 @@ namespace TSP
 {
     class Matrix
     {
-        double[,] matrix;
+        private double[,] matrix;
+        private double reductionCost = -1;
 
-        public Matrix(List<City> cities)
+        public Matrix(City[] cities)
         {
-            matrix = new double[cities.Count, cities.Count];
+            matrix = new double[cities.Length, cities.Length];
 
-            for(int i = 0; i < cities.Count; i++)
+            for(int i = 0; i < cities.Length; i++)
             {
-                for(int j = 0; j < cities.Count; j++)
+                for(int j = 0; j < cities.Length; j++)
                 {
                     matrix[i, j] = cities[j].costToGetTo(cities[i]);
                 }
             }
+        }
+
+        public Matrix(Matrix matrix)
+        {
+            this.matrix = matrix.GetMatrix();
+            this.reductionCost = matrix.GetReductionCost();
+        }
+
+        public double[,] GetMatrix()
+        {
+            return matrix;
+        }
+
+        public double GetReductionCost()
+        {
+            return reductionCost;
+        }
+
+        public void SetReductionCost(double newReductionCost)
+        {
+            reductionCost = newReductionCost;
         }
     }
 }

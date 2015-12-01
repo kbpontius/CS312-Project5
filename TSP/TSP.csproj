@@ -50,7 +50,7 @@
     <Compile Include="HardMode.cs" />
     <Compile Include="HeapNode.cs" />
     <Compile Include="LookupNode.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="Matrix.cs" />
     <Compile Include="PQ.cs" />
     <Compile Include="ProblemAndSolver.cs" />
     <Compile Include="Form1.cs">
