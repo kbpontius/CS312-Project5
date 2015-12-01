@@ -31,3 +31,10 @@ C:\Users\Kyle\Downloads\TSPBranchAndBound\TSP\obj\Debug\TSP.csproj.GenerateResou
 C:\Users\Kyle\Downloads\TSPBranchAndBound\TSP\bin\Debug\TSP.exe.config
 C:\Users\Kyle\Downloads\TSPBranchAndBound\TSP\bin\Debug\TSP.exe
 C:\Users\Kyle\Downloads\TSPBranchAndBound\TSP\bin\Debug\TSP.pdb
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\bin\Debug\TSP.exe.config
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.exe
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.pdb
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.csprojResolveAssemblyReference.cache
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.mainform.resources
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.Properties.Resources.resources
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.csproj.GenerateResource.Cache

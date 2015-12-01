@@ -36,10 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C5, Version=2.3.5280.26713, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
-      <HintPath>..\packages\C5.2.3.0.1\lib\net35\C5.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Data" />
@@ -52,6 +48,10 @@
     <Compile Include="BranchAndBound.cs" />
     <Compile Include="City.cs" />
     <Compile Include="HardMode.cs" />
+    <Compile Include="HeapNode.cs" />
+    <Compile Include="LookupNode.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="PQ.cs" />
     <Compile Include="ProblemAndSolver.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -76,7 +76,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
