@@ -56,7 +56,7 @@ namespace TSP
             return currentGreatestLBDiff ;
         }
 
-        // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN
+        // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN!!
         private Matrix[] ReduceChildren(int edge, Matrix matrix)
         {
             Matrix includeMatrix = new Matrix(matrix);
