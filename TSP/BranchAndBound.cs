@@ -6,7 +6,8 @@ namespace TSP
     {
         List<Matrix> matrices = new List<Matrix>();
         private PQ pq = new PQ(0);
-        private List<Matrix> visited = new List<Matrix>(); 
+        private List<Matrix> visited = new List<Matrix>();
+        private double BSSF;
 
         public BranchAndBound(City[] cities)
         {
@@ -41,7 +42,7 @@ namespace TSP
                 {
                     if (matrix.GetMatrix()[i, j] == 0)
                     {
-                        double greatestLbDiff = ReduceChildren(i,j, matrix);
+                        double greatestLbDiff = GetGreatestLbDifference(i,j, matrix, /* TODO: ADD BSSF HERE */);
 
                         if (greatestLbDiff > currentGreatestLbDiff)
                         {
@@ -55,7 +56,7 @@ namespace TSP
         }
 
         // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN!!
-        private State GetGreatestLbDifference(int row, int col, Matrix matrix, double BSSF)
+        private LbDifferenceResult GetGreatestLbDifference(int row, int col, Matrix matrix, double BSSF)
         {
             Matrix includeMatrix = new Matrix(matrix);
 
@@ -79,12 +80,10 @@ namespace TSP
 
             if (lbDifference < BSSF)
             {
-                return new State();
+                return new LbDifferenceResult(includeMatrix, excludeMatrix, lbDifference);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         private Matrix ReduceMatrix(Matrix matrix)

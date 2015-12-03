@@ -5,17 +5,17 @@ using System.Text;
 
 namespace TSP
 {
-    class LBDifferenceResult
+    class LbDifferenceResult
     {
-        Matrix _includeMatrix;
-        Matrix _excludeMatrix;
+        public Matrix IncludeMatrix { get; }
+        public Matrix ExcludeMatrix { get; }
+        public double LowerBoundDifference { get; }
 
-        public LBDifferenceResult(Matrix includeMatrix, Matrix excludeMatrix)
+        public LbDifferenceResult(Matrix includeMatrix, Matrix excludeMatrix, double lowerBoundDifference)
         {
-            _includeMatrix = includeMatrix;
-            _excludeMatrix = excludeMatrix;
+            IncludeMatrix = includeMatrix;
+            ExcludeMatrix = excludeMatrix;
+            LowerBoundDifference = lowerBoundDifference;
         }
-
-        public void 
     }
 }

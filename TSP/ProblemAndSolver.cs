@@ -284,21 +284,23 @@ namespace TSP
         /// </summary>
         public void solveProblem()
         {
-            BranchAndBound baBound = new BranchAndBound(Cities);
+            int x;
+            Route = new ArrayList();
+            // this is the trivial solution. 
+            for (x = 0; x < Cities.Length; x++)
+            {
+                Route.Add(Cities[Cities.Length - x -1]);
+            }
 
-//            int x;
-//            Route = new ArrayList();
-//            // this is the trivial solution. 
-//            for (x = 0; x < Cities.Length; x++)
-//            {
-//                Route.Add(Cities[Cities.Length - x -1]);
-//            }
-//            // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
-//            bssf = new TSPSolution(Route);
-//            // update the cost of the tour. 
-//            Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
-//            // do a refresh. 
-//            Program.MainForm.Invalidate();
+            // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
+            bssf = new TSPSolution(Route);
+            // update the cost of the tour.
+            Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
+
+            BranchAndBound bBound = new BranchAndBound(Cities);
+
+            // do a refresh. 
+            // Program.MainForm.Invalidate();
         }
         #endregion
     }
