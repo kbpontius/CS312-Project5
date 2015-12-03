@@ -294,12 +294,14 @@ namespace TSP
 
             // call this the best solution so far.  bssf is the route that will be drawn by the Draw method. 
             bssf = new TSPSolution(Route);
+            var bssfCost = bssf.costOfRoute();
+
             // update the cost of the tour.
-            Program.MainForm.tbCostOfTour.Text = " " + bssf.costOfRoute();
+            Program.MainForm.tbCostOfTour.Text = " " + bssfCost;
 
-            BranchAndBound bBound = new BranchAndBound(Cities);
+            BranchAndBound bBound = new BranchAndBound(Cities, bssfCost);
 
-            // do a refresh. 
+            // do a refresh.
             // Program.MainForm.Invalidate();
         }
         #endregion

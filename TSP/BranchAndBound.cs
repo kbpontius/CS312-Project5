@@ -7,11 +7,12 @@ namespace TSP
         List<Matrix> matrices = new List<Matrix>();
         private PQ pq = new PQ(0);
         private List<Matrix> visited = new List<Matrix>();
-        private double BSSF;
+        private double _BSSF;
 
-        public BranchAndBound(City[] cities)
+        public BranchAndBound(City[] cities, double bssf)
         {
-            matrices.Add(new Matrix(cities));
+            _BSSF = bssf;
+            matrices.Add(new Matrix(cities, 0));
             ReduceMatrix(matrices[0]);
 
             while (!pq.IsEmpty())
@@ -42,11 +43,11 @@ namespace TSP
                 {
                     if (matrix.GetMatrix()[i, j] == 0)
                     {
-                        double greatestLbDiff = GetGreatestLbDifference(i,j, matrix, /* TODO: ADD BSSF HERE */);
+                        LbDifferenceResult greatestLbDiff = GetGreatestLbDifference(i,j, matrix, _BSSF);
 
-                        if (greatestLbDiff > currentGreatestLbDiff)
+                        if (greatestLbDiff.LowerBoundDifference > currentGreatestLbDiff)
                         {
-                            currentGreatestLbDiff = greatestLbDiff;
+                            currentGreatestLbDiff = greatestLbDiff.LowerBoundDifference;
                         }
                     }
                 }
