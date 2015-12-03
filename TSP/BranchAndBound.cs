@@ -41,11 +41,11 @@ namespace TSP
                 {
                     if (matrix.GetMatrix()[i, j] == 0)
                     {
-                        int lbDiff = getLbDiff(i,j, matrix);
+                        double greatestLbDiff = ReduceChildren(i,j, matrix);
 
-                        if (lbDiff > currentGreatestLbDiff)
+                        if (greatestLbDiff > currentGreatestLbDiff)
                         {
-                            currentGreatestLbDiff = lbDiff;
+                            currentGreatestLbDiff = greatestLbDiff;
                         }
                     }
                 }
@@ -55,7 +55,7 @@ namespace TSP
         }
 
         // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN!!
-        private Matrix[] ReduceChildren(int row, int col, Matrix matrix)
+        private State GetGreatestLbDifference(int row, int col, Matrix matrix, double BSSF)
         {
             Matrix includeMatrix = new Matrix(matrix);
 
@@ -69,11 +69,22 @@ namespace TSP
 
             excludeMatrix.GetMatrix()[row, col] = double.PositiveInfinity;
 
-            Matrix[] includeExcludeArray = new Matrix[2];
-            includeExcludeArray[0] = includeMatrix;
-            includeExcludeArray[1] = excludeMatrix;
+            includeMatrix = ReduceMatrix(includeMatrix);
+            excludeMatrix = ReduceMatrix(excludeMatrix);
 
-            return includeExcludeArray;
+            double excludeCost = excludeMatrix.GetParentCost() - excludeMatrix.GetReductionCost();
+            double includeCost = includeMatrix.GetParentCost() - includeMatrix.GetReductionCost();
+
+            double lbDifference = excludeCost - includeCost;
+
+            if (lbDifference < BSSF)
+            {
+                return new State();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private Matrix ReduceMatrix(Matrix matrix)

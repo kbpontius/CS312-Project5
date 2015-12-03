@@ -284,7 +284,8 @@ namespace TSP
         /// </summary>
         public void solveProblem()
         {
-            BranchAndBound baBound = new BranchAndBound();
+            BranchAndBound baBound = new BranchAndBound(Cities);
+
 //            int x;
 //            Route = new ArrayList();
 //            // this is the trivial solution. 

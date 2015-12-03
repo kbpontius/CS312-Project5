@@ -2,11 +2,14 @@
 {
     class Matrix
     {
+        // FIX: Remember to add LB of parent.
         private readonly double[,] _matrix;
-        private double _reductionCost = -1;
+        private readonly double _reductionCost = -1;
+        private readonly double _parentCost;
 
-        public Matrix(City[] cities)
+        public Matrix(City[] cities, double parentCost)
         {
+            _parentCost = parentCost;
             _matrix = new double[cities.Length, cities.Length];
 
             for(int i = 0; i < cities.Length; i++)
@@ -22,6 +25,7 @@
         {
             this._matrix = matrix.GetMatrix();
             this._reductionCost = matrix.GetReductionCost();
+            this._parentCost = matrix._parentCost;
         }
 
         public double[,] GetMatrix()
@@ -34,9 +38,9 @@
             return _reductionCost;
         }
 
-        public void SetReductionCost(double newReductionCost)
+        public double GetParentCost()
         {
-            _reductionCost = newReductionCost;
+            return _parentCost;
         }
     }
 }

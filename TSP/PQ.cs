@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+// TODO: Favor a deeper search first by doing LB / (# cities)
 namespace TSP
 {
     class PQ
