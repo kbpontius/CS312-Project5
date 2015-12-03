@@ -18,10 +18,10 @@ namespace TSP
         }
 
         // MARK: PRIMARY METHODS
-        public void Add(Matrix matrix, int lookupIndex, int backPointer)
+        public void Add(State state, int lookupIndex, int backPointer)
         {
             lookupTable[lookupIndex].heapIndex = heap.Count;
-            heap.Add(new HeapNode(matrix, matrix.GetReductionCost(), lookupIndex, backPointer));
+            heap.Add(new HeapNode(state, state.GetLowerBound(), lookupIndex, backPointer));
 
             BubbleUp(heap.Count - 1);
         }
@@ -30,11 +30,11 @@ namespace TSP
         {
             HeapNode minNode = heap[0];
             heap[0] = heap[heap.Count - 1];
-            lookupTable[heap[0].LOOKUPINDEX].heapIndex = 0;
-            lookupTable[heap[0].LOOKUPINDEX].pathCost = minNode.ReductionCost;
+            lookupTable[heap[0].LookupIndex].heapIndex = 0;
+            lookupTable[heap[0].LookupIndex].pathCost = minNode.ReductionCost;
 
             heap.RemoveAt(heap.Count - 1);
-            lookupTable[minNode.LOOKUPINDEX].backPointer = minNode.backPointer;
+            lookupTable[minNode.LookupIndex].backPointer = minNode.BackPointer;
 
             BubbleDown(0);
 
@@ -45,7 +45,7 @@ namespace TSP
         {
             int heapIndex = lookupTable[lookupTableIndex].heapIndex;
             heap[heapIndex].ReductionCost = newPathValue;
-            heap[lookupTable[lookupTableIndex].heapIndex].backPointer = newBackPointer;
+            heap[lookupTable[lookupTableIndex].heapIndex].BackPointer = newBackPointer;
 
             BubbleUp(heapIndex);
         }
@@ -87,7 +87,7 @@ namespace TSP
 
         public bool NodeIsVisited(int lookupIndex)
         {
-            return lookupTable[lookupIndex].heapIndex == 0 && heap[0].LOOKUPINDEX != lookupIndex;
+            return lookupTable[lookupIndex].heapIndex == 0 && heap[0].LookupIndex != lookupIndex;
         }
 
         // MARK: HELPER METHODS
@@ -134,8 +134,8 @@ namespace TSP
         private void SwapIndices(int i1, int i2)
         {
             // Swap lookupTable values.
-            lookupTable[heap[i1].LOOKUPINDEX].heapIndex = i2;
-            lookupTable[heap[i2].LOOKUPINDEX].heapIndex = i1;
+            lookupTable[heap[i1].LookupIndex].heapIndex = i2;
+            lookupTable[heap[i2].LookupIndex].heapIndex = i1;
 
             HeapNode tempNode = heap[i1];
 

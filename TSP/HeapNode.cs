@@ -2,17 +2,17 @@
 {
     class HeapNode
     {
-        public Matrix matrix;
-        public double ReductionCost = double.MaxValue;
-        public int LOOKUPINDEX;
-        public int backPointer;
+        public State State;
+        public double ReductionCost;
+        public int LookupIndex;
+        public int BackPointer;
 
-        public HeapNode(Matrix matrix, double reductionCost, int lookupIndex, int backPointer)
+        public HeapNode(State state, double reductionCost, int lookupIndex, int backPointer)
         {
-            this.matrix = matrix;
-            this.LOOKUPINDEX = lookupIndex;
-            this.ReductionCost = reductionCost;
-            this.backPointer = backPointer;
+            State = state;
+            LookupIndex = lookupIndex;
+            ReductionCost = state.GetLowerBound();
+            BackPointer = backPointer;
         }
     }
 }
