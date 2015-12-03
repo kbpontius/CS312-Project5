@@ -6,23 +6,35 @@ namespace TSP
     {
         List<Matrix> matrices = new List<Matrix>();
         private PQ pq = new PQ(0);
-        private List<Matrix> visited = new List<Matrix>();
-        private double _BSSF;
+        private List<State> visited = new List<State>();
+        private double _bssf;
 
         public BranchAndBound(City[] cities, double bssf)
         {
-            _BSSF = bssf;
+            _bssf = bssf;
             matrices.Add(new Matrix(cities, 0));
+            CalculatePath();
+        }
+
+        private City[] CalculatePath()
+        {
             ReduceMatrix(matrices[0]);
 
             while (!pq.IsEmpty())
             {
                 HeapNode node = pq.PopMin();
-                Matrix currentMatrix = node.matrix;
+                State state = node.State;
+                visited.Add(state);
+                Matrix currentMatrix = state.GetMatrix();
 
-                // expansionEdge = greatestLowerBoundDifference()
-                // children = reduceChildren(expansionEdge, matrix {state?})
+                LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(currentMatrix);
+                Matrix[] children = new Matrix[2]
+                {greatestDifferenceResult.IncludeMatrix, greatestDifferenceResult.ExcludeMatrix};
 
+                foreach(Matrix child in children)
+                {
+                    
+                }
                 // for child in children {
                 //      if isSolution(child) {
                 //          BSSF = childLB
@@ -33,9 +45,9 @@ namespace TSP
             }
         }
 
-        private double CalculateGreatestLBDifference(Matrix matrix)
+        private LbDifferenceResult CalculateGreatestLBDifference(Matrix matrix)
         {
-            double currentGreatestLbDiff = double.NegativeInfinity;
+            LbDifferenceResult currentGreatestLbDiff = new LbDifferenceResult(null, null, 0);
 
             for (int i = 0; i < matrix.GetMatrix().Length; i++)
             {
@@ -43,11 +55,13 @@ namespace TSP
                 {
                     if (matrix.GetMatrix()[i, j] == 0)
                     {
-                        LbDifferenceResult greatestLbDiff = GetGreatestLbDifference(i,j, matrix, _BSSF);
+                        LbDifferenceResult lbDifference = GetLbDifference(i,j, matrix, _bssf);
 
-                        if (greatestLbDiff.LowerBoundDifference > currentGreatestLbDiff)
+                        if (lbDifference == null) { continue; }
+
+                        if (lbDifference.LowerBoundDifference > currentGreatestLbDiff.LowerBoundDifference)
                         {
-                            currentGreatestLbDiff = greatestLbDiff.LowerBoundDifference;
+                            currentGreatestLbDiff = lbDifference;
                         }
                     }
                 }
@@ -57,7 +71,7 @@ namespace TSP
         }
 
         // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN!!
-        private LbDifferenceResult GetGreatestLbDifference(int row, int col, Matrix matrix, double BSSF)
+        private LbDifferenceResult GetLbDifference(int row, int col, Matrix matrix, double BSSF)
         {
             Matrix includeMatrix = new Matrix(matrix);
 

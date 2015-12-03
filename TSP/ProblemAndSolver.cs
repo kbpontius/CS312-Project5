@@ -282,7 +282,7 @@ namespace TSP
         ///  solve the problem.  This is the entry point for the solver when the run button is clicked
         /// right now it just picks a simple solution. 
         /// </summary>
-        public void solveProblem()
+        public void SolveProblem()
         {
             int x;
             Route = new ArrayList();

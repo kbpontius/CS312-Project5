@@ -151,7 +151,7 @@ namespace TSP
         {
             this.reset();
 
-            CityData.solveProblem();
+            CityData.SolveProblem();
         }
 
         private void greedyToolStripMenuItem_Click(object sender, EventArgs e)
