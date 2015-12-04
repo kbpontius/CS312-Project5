@@ -4,45 +4,49 @@ namespace TSP
 {
     class BranchAndBound
     {
-        List<Matrix> matrices = new List<Matrix>();
-        private PQ pq = new PQ(0);
+        private PriorityQueue<State> pq = new PriorityQueue<State>();
         private List<State> visited = new List<State>();
         private double _bssf;
 
         public BranchAndBound(City[] cities, double bssf)
         {
             _bssf = bssf;
-            matrices.Add(new Matrix(cities, 0));
+            Matrix reducedMatrix = (new Matrix(cities, 0));
+            pq.Add(0, new State(reducedMatrix, reducedMatrix.GetParentCost() + reducedMatrix.GetReductionCost(), -1, -1));
             CalculatePath();
         }
 
         private City[] CalculatePath()
         {
-            ReduceMatrix(matrices[0]);
-
-            while (!pq.IsEmpty())
+            while (pq.Count == 0)
             {
-                HeapNode node = pq.PopMin();
-                State state = node.State;
+                State state = pq.RemoveMin();
                 visited.Add(state);
                 Matrix currentMatrix = state.GetMatrix();
 
                 LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(currentMatrix);
-                Matrix[] children = new Matrix[2]
-                {greatestDifferenceResult.IncludeMatrix, greatestDifferenceResult.ExcludeMatrix};
+                State[] children = new State[2] {greatestDifferenceResult.IncludeState, greatestDifferenceResult.ExcludeState};
 
-                foreach(Matrix child in children)
+                // TODO: WHEN DO I ADD CHILDREN TO THE PQ?
+                foreach(State child in children)
                 {
-                    
+                    if (IsSolution(child))
+                    {
+                        _bssf = child.GetLowerBound();
+                    }
+
+                    if (child.GetLowerBound() < _bssf)
+                    {
+                        pq.Add((int)child.GetLowerBound(), child);
+                    }
                 }
-                // for child in children {
-                //      if isSolution(child) {
-                //          BSSF = childLB
-                //      }
-                //      else if child.LB < BSSF {
-                //          pq.Add(child)
-                //      }
             }
+        }
+
+        private bool IsSolution(State child)
+        {
+
+            return false;
         }
 
         private LbDifferenceResult CalculateGreatestLBDifference(Matrix matrix)
@@ -74,6 +78,7 @@ namespace TSP
         private LbDifferenceResult GetLbDifference(int row, int col, Matrix matrix, double BSSF)
         {
             Matrix includeMatrix = new Matrix(matrix);
+            Matrix excludeMatrix = new Matrix(matrix);
 
             for (int i = 0; i < includeMatrix.GetMatrix().Length; i++)
             {
@@ -81,9 +86,10 @@ namespace TSP
                 includeMatrix.GetMatrix()[i, col] = double.PositiveInfinity;
             }
 
-            Matrix excludeMatrix = new Matrix(matrix);
-
             excludeMatrix.GetMatrix()[row, col] = double.PositiveInfinity;
+
+            includeMatrix.GetMatrix()[col, row] = double.PositiveInfinity;
+            excludeMatrix.GetMatrix()[col, row] = double.PositiveInfinity;
 
             includeMatrix = ReduceMatrix(includeMatrix);
             excludeMatrix = ReduceMatrix(excludeMatrix);
@@ -95,7 +101,7 @@ namespace TSP
 
             if (lbDifference < BSSF)
             {
-                return new LbDifferenceResult(includeMatrix, excludeMatrix, lbDifference);
+                return new LbDifferenceResult(new State(includeMatrix, includeCost, row, col), new State(excludeMatrix, excludeCost, row, col), lbDifference);
             }
 
             return null;

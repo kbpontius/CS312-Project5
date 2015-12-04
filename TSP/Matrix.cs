@@ -25,7 +25,7 @@
 
         public Matrix(Matrix matrix)
         {
-            _matrix = matrix.GetMatrix();
+            _matrix = (double[,])matrix.GetMatrix().Clone();
             _reductionCost = matrix.GetReductionCost();
             _parentCost = matrix._parentCost;
         }

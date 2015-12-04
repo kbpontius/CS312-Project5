@@ -7,14 +7,14 @@ namespace TSP
 {
     class LbDifferenceResult
     {
-        public Matrix IncludeMatrix { get; }
-        public Matrix ExcludeMatrix { get; }
+        public State IncludeState { get; }
+        public State ExcludeState { get; }
         public double LowerBoundDifference { get; }
 
-        public LbDifferenceResult(Matrix includeMatrix, Matrix excludeMatrix, double lowerBoundDifference)
+        public LbDifferenceResult(State includeState, State excludeState, double lowerBoundDifference)
         {
-            IncludeMatrix = includeMatrix;
-            ExcludeMatrix = excludeMatrix;
+            IncludeState = includeState;
+            ExcludeState = excludeState;
             LowerBoundDifference = lowerBoundDifference;
         }
     }
