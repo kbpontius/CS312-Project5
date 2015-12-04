@@ -38,3 +38,5 @@ C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.csprojResolv
 C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.mainform.resources
 C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.Properties.Resources.resources
 C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Debug\TSP.csproj.GenerateResource.Cache
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\bin\Debug\TSP.exe
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\bin\Debug\TSP.pdb
