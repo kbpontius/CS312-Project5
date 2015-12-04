@@ -121,7 +121,7 @@ namespace TSP
             State includeState = GenerateReducedMatrix(includeMatrix, state.GetCityTo(), state.GetCityFrom());
             State excludeState = GenerateReducedMatrix(excludeMatrix, state.GetCityTo(), state.GetCityFrom());
 
-            double lbDifference = Math.Abs(excludeState.GetLowerBound() - includeState.GetLowerBound());
+            double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
 
             if (lbDifference < bssf)
             {
