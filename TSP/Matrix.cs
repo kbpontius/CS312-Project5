@@ -12,7 +12,13 @@
             {
                 for(int j = 0; j < cities.Length; j++)
                 {
-                    _matrix[i, j] = cities[j].costToGetTo(cities[i]);
+                    if (i == j)
+                    {
+                        _matrix[i, j] = double.PositiveInfinity;
+                        continue;
+                    }
+
+                    _matrix[i, j] = cities[i].costToGetTo(cities[j]);
                 }
             }
         }

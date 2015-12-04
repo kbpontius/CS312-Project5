@@ -2,3 +2,11 @@ C:\Users\Richard\Desktop\312 projects\TSPBranchAndBound\TSPBranchAndBound\for-di
 C:\Users\Richard\Desktop\312 projects\TSPBranchAndBound\TSPBranchAndBound\for-distribution\TSP\obj\Release\TSP.Form1.resources
 C:\Users\Richard\Desktop\312 projects\TSPBranchAndBound\TSPBranchAndBound\for-distribution\TSP\obj\Release\TSP.Properties.Resources.resources
 C:\Users\Richard\Desktop\312 projects\TSPBranchAndBound\TSPBranchAndBound\for-distribution\TSP\obj\Release\TSP.csproj.GenerateResource.Cache
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\bin\Release\TSP.exe.config
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\bin\Release\TSP.exe
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\bin\Release\TSP.pdb
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.mainform.resources
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.Properties.Resources.resources
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.csproj.GenerateResource.Cache
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.exe
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.pdb

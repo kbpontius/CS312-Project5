@@ -115,24 +115,13 @@ namespace TSP
             Matrix includeMatrix = new Matrix(state.Matrix);
             Matrix excludeMatrix = new Matrix(state.Matrix);
 
-            // Set row and col to infinity
-            for (int i = 0; i < includeMatrix.GetMatrix().GetLength(0); i++)
-            {
-                includeMatrix.GetMatrix()[row, i] = double.PositiveInfinity;
-                includeMatrix.GetMatrix()[i, col] = double.PositiveInfinity;
-            }
-
-            // Exclude cell
-            excludeMatrix.GetMatrix()[row, col] = double.PositiveInfinity;
-
-            // Prevent premature cycles, set inverse location to infinity
-            includeMatrix.GetMatrix()[col, row] = double.PositiveInfinity;
-            excludeMatrix.GetMatrix()[col, row] = double.PositiveInfinity;
+            includeMatrix = SetupIncludeMatrix(includeMatrix, row, col);
+            excludeMatrix = SetupExcludeMatrix(excludeMatrix, row, col);
 
             State includeState = GenerateReducedMatrix(includeMatrix, state.GetCityTo(), state.GetCityFrom());
             State excludeState = GenerateReducedMatrix(excludeMatrix, state.GetCityTo(), state.GetCityFrom());
 
-            double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
+            double lbDifference = Math.Abs(excludeState.GetLowerBound() - includeState.GetLowerBound());
 
             if (lbDifference < bssf)
             {
@@ -148,57 +137,86 @@ namespace TSP
         {
             // This is the total cost of reduction.
             double sumDifference = 0;
-
+            PrintMatrix(matrix);
             // Reduce row by row.
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
-                double rowMin = double.MaxValue;
+                double rowMin = double.PositiveInfinity;
 
                 for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                 {
-                    if (matrix.GetMatrix()[i, j] < rowMin)
+                    if (matrix.GetMatrix()[i, j] < rowMin && !Double.IsInfinity(matrix.GetMatrix()[i, j]))
                     {
                         rowMin = matrix.GetMatrix()[i, j];
                     }
                 }
 
-                if (rowMin >  0)
+                if (rowMin >  0 && !Double.IsInfinity(rowMin))
                 {
-
                     for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                     {
                         matrix.GetMatrix()[i, j] -= rowMin;
-                        sumDifference += rowMin;
                     }
+
+                    sumDifference += rowMin;
                 }
             }
 
             // Reduce column by column.
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
-                double colMin = double.MaxValue;
+                double colMin = double.PositiveInfinity;
 
                 for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                 {
-                    if (matrix.GetMatrix()[i, j] < colMin)
+                    if (matrix.GetMatrix()[i, j] < colMin && !Double.IsInfinity(colMin))
                     {
                         colMin = matrix.GetMatrix()[i, j];
                     }
                 }
 
-                if (colMin > 0)
+                if (colMin > 0 && !Double.IsInfinity(colMin))
                 {
                     for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                     {
                         matrix.GetMatrix()[i, j] -= colMin;
-                        sumDifference += colMin;
                     }
+
+                    sumDifference += colMin;
                 }
             }
+
+            PrintMatrix(matrix);
 
             State state = new State(matrix, sumDifference, citiesTo, citiesFrom, -1);
 
             return state;
+        }
+
+        private Matrix SetupIncludeMatrix(Matrix matrix, int row, int col)
+        {
+            // Set row and col to infinity
+            for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
+            {
+                matrix.GetMatrix()[row, i] = double.PositiveInfinity;
+                matrix.GetMatrix()[i, col] = double.PositiveInfinity;
+            }
+
+            // Prevent premature cycles, set inverse location to infinity
+            matrix.GetMatrix()[col, row] = double.PositiveInfinity;
+
+            return matrix;
+        }
+
+        private Matrix SetupExcludeMatrix(Matrix matrix, int row, int col)
+        {
+            // Exclude cell
+            matrix.GetMatrix()[row, col] = double.PositiveInfinity;
+
+            // Prevent premature cycles, set inverse location to infinity
+            matrix.GetMatrix()[col, row] = double.PositiveInfinity;
+
+            return matrix;
         }
 
         private static void Populate<T>(T[] arr, T value)
@@ -206,6 +224,19 @@ namespace TSP
             for (int i = 0; i < arr.Length; i++)
             {
                 arr[i] = value;
+            }
+        }
+
+        private void PrintMatrix(Matrix matrix)
+        {
+            for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
+                {
+                    Console.Write(matrix.GetMatrix()[i, j] + "\t\t");
+                }
+
+                Console.Write("\n");
             }
         }
     }
