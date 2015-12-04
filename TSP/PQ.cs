@@ -1,223 +1,95 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-// TODO: Favor a deeper search first by doing LB / (# cities)
 namespace TSP
 {
-    class PQ
+    internal class MinHeap<T> where T : IComparable<T>
     {
-        private List<HeapNode> heap = new List<HeapNode>();
-        private List<LookupNode> lookupTable = new List<LookupNode>();
+        private readonly List<T> array = new List<T>();
 
-        // MARK: INITIALIZER
-        public PQ(int lookupTableSize)
+        public int Count
         {
-            for (int i = 0; i < lookupTableSize; i++)
+            get { return array.Count; }
+        }
+
+        public void Add(T element)
+        {
+            array.Add(element);
+            var c = array.Count - 1;
+            while (c > 0 && array[c].CompareTo(array[c/2]) == -1)
             {
-                lookupTable.Add(new LookupNode());   
+                var tmp = array[c];
+                array[c] = array[c/2];
+                array[c/2] = tmp;
+                c = c/2;
             }
         }
 
-        // MARK: PRIMARY METHODS
-        public void Add(State state, int lookupIndex, int backPointer)
+        public T RemoveMin()
         {
-            lookupTable[lookupIndex].heapIndex = heap.Count;
-            heap.Add(new HeapNode(state, state.GetLowerBound(), lookupIndex, backPointer));
+            var ret = array[0];
+            array[0] = array[array.Count - 1];
+            array.RemoveAt(array.Count - 1);
 
-            BubbleUp(heap.Count - 1);
-        }
-
-        public HeapNode PopMin()
-        {
-            HeapNode minNode = heap[0];
-            heap[0] = heap[heap.Count - 1];
-            lookupTable[heap[0].LookupIndex].heapIndex = 0;
-            lookupTable[heap[0].LookupIndex].pathCost = minNode.ReductionCost;
-
-            heap.RemoveAt(heap.Count - 1);
-            lookupTable[minNode.LookupIndex].backPointer = minNode.BackPointer;
-
-            BubbleDown(0);
-
-            return minNode;
-        }
-
-        public void DecreaseKey(int lookupTableIndex, double newPathValue, int newBackPointer)
-        {
-            int heapIndex = lookupTable[lookupTableIndex].heapIndex;
-            heap[heapIndex].ReductionCost = newPathValue;
-            heap[lookupTable[lookupTableIndex].heapIndex].BackPointer = newBackPointer;
-
-            BubbleUp(heapIndex);
-        }
-
-        public bool IsEmpty()
-        {
-            return heap.Count <= 0;
-        }
-
-        public double GetPathCost(int lookupIndex)
-        {
-            if (NodeIsAdded(lookupIndex))
+            var c = 0;
+            while (c < array.Count)
             {
-                return heap[lookupTable[lookupIndex].heapIndex].ReductionCost;
+                var min = c;
+                if (2*c + 1 < array.Count && array[2*c + 1].CompareTo(array[min]) == -1)
+                    min = 2*c + 1;
+                if (2*c + 2 < array.Count && array[2*c + 2].CompareTo(array[min]) == -1)
+                    min = 2*c + 2;
+
+                if (min == c)
+                    break;
+                var tmp = array[c];
+                array[c] = array[min];
+                array[min] = tmp;
+                c = min;
             }
 
-            return -1;
+            return ret;
         }
 
-        public double GetFinalPathCost(int lookupIndex)
+        public T Peek()
         {
-            if (NodeIsAdded(lookupIndex))
+            return array[0];
+        }
+    }
+
+    internal class PriorityQueue<T>
+    {
+        private readonly MinHeap<Node> minHeap = new MinHeap<Node>();
+
+        public int Count
+        {
+            get { return minHeap.Count; }
+        }
+
+        public void Add(int priority, T element)
+        {
+            minHeap.Add(new Node {Priority = priority, O = element});
+        }
+
+        public T RemoveMin()
+        {
+            return minHeap.RemoveMin().O;
+        }
+
+        public T Peek()
+        {
+            return minHeap.Peek().O;
+        }
+
+        internal class Node : IComparable<Node>
+        {
+            public T O;
+            public int Priority;
+
+            public int CompareTo(Node other)
             {
-                return lookupTable[lookupIndex].pathCost;
+                return Priority.CompareTo(other.Priority);
             }
-
-            return -1;
-        }
-
-        public int GetBackPointer(int lookupIndex)
-        {
-            return lookupTable[lookupIndex].backPointer;
-        }
-
-        public bool NodeIsAdded(int lookupIndex)
-        {
-            return lookupTable[lookupIndex].heapIndex != -1;
-        }
-
-        public bool NodeIsVisited(int lookupIndex)
-        {
-            return lookupTable[lookupIndex].heapIndex == 0 && heap[0].LookupIndex != lookupIndex;
-        }
-
-        // MARK: HELPER METHODS
-        private void BubbleUp(int index)
-        {
-            int currentIndex = index;
-            double currentValue = double.MinValue;
-            double parentValue = double.MaxValue;
-
-            while (currentIndex != 0 && parentValue > currentValue)
-            {
-                currentValue = heap[currentIndex].ReductionCost;
-                parentValue = GetParentValue(currentIndex);
-
-                if (currentValue < parentValue)
-                {
-                    SwapIndices(currentIndex, GetParentIndex(currentIndex));
-                    currentIndex = GetParentIndex(currentIndex);
-                }
-            }
-        }
-
-        private void BubbleDown(int index)
-        {
-            int currentIndex = index;
-            int minChildIndex;
-            double currentValue = double.MaxValue;
-            double minChildValue = double.MinValue;
-
-            while (HasLeftChild(currentIndex) && minChildValue < currentValue)
-            {
-                currentValue = heap[currentIndex].ReductionCost;
-                minChildIndex = GetMinChildIndex(currentIndex);
-                minChildValue = heap[minChildIndex].ReductionCost;
-
-                if (currentValue > minChildValue)
-                {
-                    SwapIndices(currentIndex, minChildIndex);
-                    currentIndex = minChildIndex;
-                }
-            }
-        }
-
-        private void SwapIndices(int i1, int i2)
-        {
-            // Swap lookupTable values.
-            lookupTable[heap[i1].LookupIndex].heapIndex = i2;
-            lookupTable[heap[i2].LookupIndex].heapIndex = i1;
-
-            HeapNode tempNode = heap[i1];
-
-            // Perform Node swap.
-            heap[i1] = heap[i2];
-            heap[i2] = tempNode;
-        }
-
-        public bool AllPathsIsFinished()
-        {
-            return heap[0].ReductionCost == double.MaxValue;
-        }
-
-        // MARK: INDEX GETTER METHODS
-        private int GetParentIndex(int index)
-        {
-            return (index - 1) / 2;
-        }
-
-        private int GetLeftChildIndex(int index)
-        {
-            return (2 * index) + 1;
-        }
-
-        private int GetRightChildIndex(int index)
-        {
-            return (2 * index) + 2;
-        }
-
-        private bool HasLeftChild(int index)
-        {
-            return GetLeftChildIndex(index) <= heap.Count - 1;
-        }
-
-        private bool HasRightChild(int index)
-        {
-            return GetRightChildIndex(index) <= heap.Count - 1;
-        }
-
-        // MARK: VALUE METHODS
-        private int GetMinChildIndex(int index)
-        {
-            double leftChildValue = double.MaxValue;
-            double rightChildValue;
-
-            if (HasLeftChild(index))
-            {
-                leftChildValue = GetLeftChildValue(index);
-            }
-
-            if (HasRightChild(index))
-            {
-                rightChildValue = GetRightChildValue(index);
-            }
-            else
-            {
-                return GetLeftChildIndex(index);
-            }
-
-            if (leftChildValue < rightChildValue)
-            {
-                return GetLeftChildIndex(index);
-            }
-            else
-            {
-                return GetRightChildIndex(index);
-            }
-        }
-
-        private double GetParentValue(int index)
-        {
-            return heap[GetParentIndex(index)].ReductionCost;
-        }
-
-        private double GetLeftChildValue(int index)
-        {
-            return heap[GetLeftChildIndex(index)].ReductionCost;
-        }
-
-        private double GetRightChildValue(int index)
-        {
-            return heap[GetRightChildIndex(index)].ReductionCost;
         }
     }
 }
