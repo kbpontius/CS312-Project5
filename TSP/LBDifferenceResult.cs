@@ -7,11 +7,11 @@ namespace TSP
 {
     class LbDifferenceResult
     {
-        public State IncludeState { get; }
-        public State ExcludeState { get; }
+        public State IncludeState;
+        public State ExcludeState;
         public double LowerBoundDifference { get; }
-        public int FromCity = -1;
-        public int ToCity = -1;
+        public int FromCity;
+        public int ToCity;
 
         public LbDifferenceResult(State includeState, State excludeState, double lowerBoundDifference, int fromCity, int toCity)
         {

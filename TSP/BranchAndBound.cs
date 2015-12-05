@@ -33,7 +33,6 @@ namespace TSP
                 LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(state);
                 State[] children = new State[2] {greatestDifferenceResult.IncludeState, greatestDifferenceResult.ExcludeState};
 
-                // TODO: WHEN DO I ADD CHILDREN TO THE PQ?
                 foreach(State child in children)
                 {
                     if (child == null) { continue; }
@@ -87,7 +86,7 @@ namespace TSP
 
         private LbDifferenceResult CalculateGreatestLBDifference(State state)
         {
-            LbDifferenceResult currentGreatestLbDiff = new LbDifferenceResult(null, null, double.NegativeInfinity);
+            LbDifferenceResult currentGreatestLbDiff = new LbDifferenceResult(null, null, double.NegativeInfinity, -1, -1);
 
             for (int i = 0; i < state.Matrix.GetMatrix().GetLength(0); i++)
             {
@@ -102,6 +101,7 @@ namespace TSP
                         if (lbDifference.LowerBoundDifference > currentGreatestLbDiff.LowerBoundDifference)
                         {
                             currentGreatestLbDiff = lbDifference;
+                            currentGreatestLbDiff.IncludeState = DeleteEdges(currentGreatestLbDiff.IncludeState, i, j);
                         }
                     }
                 }
@@ -124,10 +124,7 @@ namespace TSP
 
             double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
 
-            includeState.SetCityFromTo(row, col);
-            excludeState.SetCityFromTo(row, col);
             includeState.SetCitiesInSolution(includeState.GetCitiesInSolution() + 1);
-            excludeState.SetCitiesInSolution(excludeState.GetCitiesInSolution() + 1);
 
             return new LbDifferenceResult(includeState, excludeState, lbDifference, row, col);
         }
@@ -195,23 +192,26 @@ namespace TSP
 
         private State DeleteEdges(State state, int row, int col)
         {
-            PrintMatrix(state.Matrix);
+            state.GetCityTo()[row] = col;
+            state.GetCityFrom()[col] = row;
 
-            int start = state.GetCityFrom()[col];
-            int end = state.GetCityTo()[row];
+            state.Matrix.GetMatrix()[col, row] = double.PositiveInfinity;
 
-            while (state.GetCityTo()[end] != -1)
+            if (state.GetCitiesInSolution() < _cities.Length)
             {
-                end = state.GetCityTo()[end];
-            }
+                int start = row;
+                int end = col;
 
-            while (state.GetCityFrom()[start] != -1)
-            {
-                start = state.GetCityFrom()[start];
-            }
+                while (state.GetCityTo()[end] != -1)
+                {
+                    end = state.GetCityTo()[end];
+                }
 
-            if (state.GetCitiesInSolution() < _cities.Length - 1)
-            {
+                while (state.GetCityFrom()[start] != -1)
+                {
+                    start = state.GetCityFrom()[start];
+                }
+
                 while (start != col)
                 {
                     state.Matrix.GetMatrix()[end, start] = double.PositiveInfinity;
@@ -219,8 +219,6 @@ namespace TSP
                     start = state.GetCityTo()[start];
                 }
             }
-
-            PrintMatrix(state.Matrix);
 
             return state;
         }
@@ -233,9 +231,6 @@ namespace TSP
                 matrix.GetMatrix()[row, i] = double.PositiveInfinity;
                 matrix.GetMatrix()[i, col] = double.PositiveInfinity;
             }
-
-            // Prevent premature cycles, set inverse location to infinity
-            matrix.GetMatrix()[col, row] = double.PositiveInfinity;
 
             return matrix;
         }
