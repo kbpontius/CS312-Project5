@@ -13,11 +13,13 @@ namespace TSP
         public int FromCity = -1;
         public int ToCity = -1;
 
-        public LbDifferenceResult(State includeState, State excludeState, double lowerBoundDifference)
+        public LbDifferenceResult(State includeState, State excludeState, double lowerBoundDifference, int fromCity, int toCity)
         {
             IncludeState = includeState;
             ExcludeState = excludeState;
             LowerBoundDifference = lowerBoundDifference;
+            FromCity = fromCity;
+            ToCity = toCity;
         }
     }
 }

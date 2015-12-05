@@ -8,23 +8,32 @@ namespace TSP
     class State
     {
         public  Matrix Matrix;
-        private readonly double _lowerBound;
+        public  double LowerBound;
         private readonly int[] _cityFrom;
         private readonly int[] _cityTo;
-        private readonly int _citiesInSolution;
+        private int _citiesInSolution;
 
         public State(Matrix matrix, double lowerBound, int[] cityFrom, int[] cityTo, int citiesInSolution)
         {
             Matrix = new Matrix(matrix);
-            _lowerBound = lowerBound;
+            LowerBound = lowerBound;
             _cityFrom = (int[])cityFrom.Clone();
             _cityTo = (int[])cityTo.Clone();
             _citiesInSolution = citiesInSolution;
         }
 
+        public State(State state)
+        {
+            Matrix = new Matrix(state.Matrix);
+            LowerBound = state.LowerBound;
+            _cityFrom = (int[])state._cityFrom.Clone();
+            _cityTo = (int[])state._cityTo.Clone();
+            _citiesInSolution = state._citiesInSolution;
+        }
+
         public double GetLowerBound()
         {
-            return _lowerBound;
+            return LowerBound;
         }
 
         public int[] GetCityFrom()
@@ -46,6 +55,11 @@ namespace TSP
         {
             _cityFrom[cityTo] = cityFrom;
             _cityTo[cityFrom] = cityTo;
+        }
+
+        public void SetCitiesInSolution(int citiesInSolution)
+        {
+            _citiesInSolution = citiesInSolution;
         }
     }
 }
