@@ -8,7 +8,8 @@ namespace TSP
     class BranchAndBound
     {
         private PriorityQueue<State> pq = new PriorityQueue<State>();
-        private List<State> visited = new List<State>();
+        private int visited = 0;
+        private int bssfUpdates = 0;
         private State _bestStateSoFar = null;
         private double _bssf;
         private City[] _cities;
@@ -28,22 +29,22 @@ namespace TSP
             while (pq.Count != 0)
             {
                 State state = pq.RemoveMin();
-                visited.Add(state); // TODO: Use this for the report metrics?
+                visited++;
+                Console.WriteLine(visited);
 
                 LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(state);
                 State[] children = new State[2] {greatestDifferenceResult.IncludeState, greatestDifferenceResult.ExcludeState};
 
                 foreach(State child in children)
                 {
-                    if (child == null) { continue; }
-
                     if (IsSolution(child))
                     {
+                        bssfUpdates++;
+                        Console.WriteLine("BSSF Updates: " + bssfUpdates);
                         _bssf = child.GetLowerBound();
                         _bestStateSoFar = child;
                     }
-
-                    if (child.GetLowerBound() < _bssf)
+                    else if (child.GetLowerBound() < _bssf)
                     {
                         pq.Add((int)child.GetLowerBound(), child);
                     }
@@ -86,7 +87,7 @@ namespace TSP
 
         private LbDifferenceResult CalculateGreatestLBDifference(State state)
         {
-            LbDifferenceResult currentGreatestLbDiff = new LbDifferenceResult(null, null, double.NegativeInfinity, -1, -1);
+            LbDifferenceResult currentGreatestLbDiff = null;
 
             for (int i = 0; i < state.Matrix.GetMatrix().GetLength(0); i++)
             {
@@ -94,14 +95,11 @@ namespace TSP
                 {
                     if (state.Matrix.GetMatrix()[i, j] == 0)
                     {
-                        LbDifferenceResult lbDifference = GetLbDifference(i,j, state, _bssf);
+                        LbDifferenceResult lbDifference = GetLbDifference(i, j, state);
 
-                        if (lbDifference == null) { continue; }
-
-                        if (lbDifference.LowerBoundDifference > currentGreatestLbDiff.LowerBoundDifference)
+                        if (currentGreatestLbDiff == null || lbDifference.LowerBoundDifference > currentGreatestLbDiff.LowerBoundDifference)
                         {
                             currentGreatestLbDiff = lbDifference;
-                            currentGreatestLbDiff.IncludeState = DeleteEdges(currentGreatestLbDiff.IncludeState, i, j);
                         }
                     }
                 }
@@ -111,19 +109,21 @@ namespace TSP
         }
 
         // TODO: FIX THIS METHOD TO MATCH THE EDGE.ROW && EDGE.COLUMN!!
-        private LbDifferenceResult GetLbDifference(int row, int col, State state, double bssf)
+        private LbDifferenceResult GetLbDifference(int row, int col, State state)
         {
             State includeState = new State(state);
             State excludeState = new State(state);
-
+            // PrintMatrix(includeState.Matrix);
             includeState.Matrix = SetupIncludeMatrix(includeState.Matrix, row, col);
             excludeState.Matrix = SetupExcludeMatrix(excludeState.Matrix, row, col);
-
+            // PrintMatrix(includeState.Matrix);
+            includeState = DeleteEdges(includeState, row, col);
+            // PrintMatrix(includeState.Matrix);
             includeState = GenerateReducedMatrix(includeState);
             excludeState = GenerateReducedMatrix(excludeState);
+            // PrintMatrix(includeState.Matrix);
 
             double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
-
             includeState.SetCitiesInSolution(includeState.GetCitiesInSolution() + 1);
 
             return new LbDifferenceResult(includeState, excludeState, lbDifference, row, col);
@@ -132,24 +132,25 @@ namespace TSP
         private State GenerateReducedMatrix(State state)
         {
             Matrix matrix = state.Matrix;
+            PrintMatrix(matrix);
 
             // This is the total cost of reduction.
             double sumDifference = 0;
 
-            // Reduce row by row.
+            // Reduce row by row
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
                 double rowMin = double.PositiveInfinity;
 
                 for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                 {
-                    if (matrix.GetMatrix()[i, j] < rowMin && !Double.IsInfinity(matrix.GetMatrix()[i, j]))
+                    if (matrix.GetMatrix()[i, j] < rowMin)
                     {
                         rowMin = matrix.GetMatrix()[i, j];
                     }
                 }
 
-                if (rowMin >  0 && !Double.IsInfinity(rowMin))
+                if (rowMin >  0 && !double.IsInfinity(rowMin))
                 {
                     for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                     {
@@ -160,24 +161,24 @@ namespace TSP
                 }
             }
 
-            // Reduce column by column.
+            // Reduce column by column
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
                 double colMin = double.PositiveInfinity;
 
                 for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                 {
-                    if (matrix.GetMatrix()[i, j] < colMin && !Double.IsInfinity(colMin))
+                    if (matrix.GetMatrix()[j, i] < colMin)
                     {
-                        colMin = matrix.GetMatrix()[i, j];
+                        colMin = matrix.GetMatrix()[j, i];
                     }
                 }
 
-                if (colMin > 0 && !Double.IsInfinity(colMin))
+                if (colMin > 0 && !double.IsInfinity(colMin))
                 {
                     for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                     {
-                        matrix.GetMatrix()[i, j] -= colMin;
+                        matrix.GetMatrix()[j, i] -= colMin;
                     }
 
                     sumDifference += colMin;
@@ -186,6 +187,7 @@ namespace TSP
 
             state.LowerBound += sumDifference;
             state.Matrix = matrix;
+            PrintMatrix(matrix);
 
             return state;
         }
@@ -195,27 +197,26 @@ namespace TSP
             state.GetCityTo()[row] = col;
             state.GetCityFrom()[col] = row;
 
-            state.Matrix.GetMatrix()[col, row] = double.PositiveInfinity;
-
-            if (state.GetCitiesInSolution() < _cities.Length)
+            if (state.GetCitiesInSolution() < _cities.Length - 1)
             {
                 int start = row;
                 int end = col;
-
-                while (state.GetCityTo()[end] != -1)
-                {
-                    end = state.GetCityTo()[end];
-                }
 
                 while (state.GetCityFrom()[start] != -1)
                 {
                     start = state.GetCityFrom()[start];
                 }
 
+                while (state.GetCityTo()[end] != -1)
+                {
+                    end = state.GetCityTo()[end];
+                }
+
                 while (start != col)
                 {
                     state.Matrix.GetMatrix()[end, start] = double.PositiveInfinity;
                     state.Matrix.GetMatrix()[col, start] = double.PositiveInfinity;
+
                     start = state.GetCityTo()[start];
                 }
             }
@@ -232,6 +233,8 @@ namespace TSP
                 matrix.GetMatrix()[i, col] = double.PositiveInfinity;
             }
 
+            matrix.GetMatrix()[col, row] = double.PositiveInfinity;
+
             return matrix;
         }
 
@@ -239,9 +242,6 @@ namespace TSP
         {
             // Exclude cell
             matrix.GetMatrix()[row, col] = double.PositiveInfinity;
-
-            // Prevent premature cycles, set inverse location to infinity
-            matrix.GetMatrix()[col, row] = double.PositiveInfinity;
 
             return matrix;
         }
