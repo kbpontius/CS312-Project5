@@ -50,6 +50,7 @@
     <Compile Include="HardMode.cs" />
     <Compile Include="LBDifferenceResult.cs" />
     <Compile Include="Matrix.cs" />
+    <Compile Include="PathCalculation.cs" />
     <Compile Include="PQ.cs" />
     <Compile Include="ProblemAndSolver.cs" />
     <Compile Include="Form1.cs">

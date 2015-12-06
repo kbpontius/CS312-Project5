@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Drawing;
+using System.Xml.XPath;
 
 namespace TSP
 {
@@ -296,14 +297,17 @@ namespace TSP
             double bssfCost = bssf.costOfRoute();
 
             BranchAndBound bBound = new BranchAndBound(Cities, bssfCost);
-            City[] result = bBound.CalculatePath();
+            PathCalculation result = bBound.CalculatePath();
 
-            if (result != null)
+            City[] path = result.Cities;
+
+            if (path != null)
             {
-                bssf = new TSPSolution(new ArrayList(result));
+                bssf = new TSPSolution(new ArrayList(path));
                 bssfCost = bssf.costOfRoute();
             }
 
+            Program.MainForm.tbElapsedTime.Text = (result.ElapsedTime / 1000).ToString();
             // update the cost of the tour.
             Program.MainForm.tbCostOfTour.Text = " " + bssfCost;
 

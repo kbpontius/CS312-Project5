@@ -25,13 +25,18 @@ namespace TSP
             pq.Add(0, state);
         }
 
-        public City[] CalculatePath()
+        public PathCalculation CalculatePath()
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             while (pq.Count != 0)
             {
+                if (stopwatch.Elapsed.Seconds >= 30)
+                {
+                    break;
+                }
+
                 State state = pq.RemoveMin();
                 visited++;
                 // Console.WriteLine(visited);
@@ -55,10 +60,12 @@ namespace TSP
                 }
             }
 
-            return GeneratePathResult(_bestStateSoFar, _cities);
+            stopwatch.Stop();
+
+            return GeneratePathResult(_bestStateSoFar, _cities, stopwatch.ElapsedMilliseconds);
         }
 
-        private City[] GeneratePathResult(State solution, City[] cities)
+        private PathCalculation GeneratePathResult(State solution, City[] cities, double elapsedTime)
         {
             if (solution == null) { return null; }
 
@@ -71,7 +78,7 @@ namespace TSP
                 currentCity = solution.GetCityTo()[currentCity];
             }
 
-            return pathResult.ToArray();
+            return new PathCalculation(pathResult.ToArray(), elapsedTime);
         }
 
         private bool IsSolution(State child)
