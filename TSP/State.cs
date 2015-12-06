@@ -9,8 +9,8 @@ namespace TSP
     {
         public  Matrix Matrix;
         public  double LowerBound;
-        private readonly int[] _cityFrom;
-        private readonly int[] _cityTo;
+        private int[] _cityFrom;
+        private int[] _cityTo;
         private int _citiesInSolution;
 
         public State(Matrix matrix, double lowerBound, int[] cityFrom, int[] cityTo, int citiesInSolution)
