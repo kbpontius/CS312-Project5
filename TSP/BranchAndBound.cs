@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -26,11 +27,14 @@ namespace TSP
 
         public City[] CalculatePath()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             while (pq.Count != 0)
             {
                 State state = pq.RemoveMin();
                 visited++;
-                Console.WriteLine(visited);
+                // Console.WriteLine(visited);
 
                 LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(state);
                 State[] children = new State[2] {greatestDifferenceResult.IncludeState, greatestDifferenceResult.ExcludeState};
@@ -124,7 +128,6 @@ namespace TSP
             // PrintMatrix(includeState.Matrix);
 
             double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
-            includeState.SetCitiesInSolution(includeState.GetCitiesInSolution() + 1);
 
             return new LbDifferenceResult(includeState, excludeState, lbDifference, row, col);
         }
@@ -132,7 +135,6 @@ namespace TSP
         private State GenerateReducedMatrix(State state)
         {
             Matrix matrix = state.Matrix;
-            PrintMatrix(matrix);
 
             // This is the total cost of reduction.
             double sumDifference = 0;
@@ -187,7 +189,6 @@ namespace TSP
 
             state.LowerBound += sumDifference;
             state.Matrix = matrix;
-            PrintMatrix(matrix);
 
             return state;
         }
@@ -196,6 +197,7 @@ namespace TSP
         {
             state.GetCityTo()[row] = col;
             state.GetCityFrom()[col] = row;
+            state.SetCitiesInSolution(state.GetCitiesInSolution() + 1);
 
             if (state.GetCitiesInSolution() < _cities.Length - 1)
             {
@@ -254,8 +256,17 @@ namespace TSP
             }
         }
 
-        private void PrintMatrix(Matrix matrix)
+        private void PrintMatrix(State state)
         {
+            Console.WriteLine("------------------------------------");
+
+            Matrix matrix = state.Matrix;
+
+            for (int i = 0; i < state.GetCityTo().Length; i++)
+            {
+                Console.WriteLine(i + " --> " + state.GetCityTo()[i]);
+            }
+
             Console.WriteLine("------------------------------------");
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
