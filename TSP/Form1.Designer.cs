@@ -53,7 +53,7 @@ namespace TSP
             this.randomProblem = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel5 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.tbNumberOfSolutions = new System.Windows.Forms.ToolStripTextBox();
             this.toolStrip1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
@@ -158,7 +158,7 @@ namespace TSP
             this.randomProblem,
             this.toolStripSeparator1,
             this.toolStripLabel5,
-            this.toolStripTextBox1});
+            this.tbNumberOfSolutions});
             this.toolStrip2.Location = new System.Drawing.Point(0, 562);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(634, 25);
@@ -185,35 +185,35 @@ namespace TSP
             // dToolStripMenuItem
             // 
             this.dToolStripMenuItem.Name = "dToolStripMenuItem";
-            this.dToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.dToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.dToolStripMenuItem.Text = "Default";
             this.dToolStripMenuItem.Click += new System.EventHandler(this.dToolStripMenuItem_Click);
             // 
             // yourTSPToolStripMenuItem1
             // 
             this.yourTSPToolStripMenuItem1.Name = "yourTSPToolStripMenuItem1";
-            this.yourTSPToolStripMenuItem1.Size = new System.Drawing.Size(122, 22);
+            this.yourTSPToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
             this.yourTSPToolStripMenuItem1.Text = "Your TSP";
             this.yourTSPToolStripMenuItem1.Click += new System.EventHandler(this.yourTSPToolStripMenuItem1_Click);
             // 
             // randomToolStripMenuItem1
             // 
             this.randomToolStripMenuItem1.Name = "randomToolStripMenuItem1";
-            this.randomToolStripMenuItem1.Size = new System.Drawing.Size(122, 22);
+            this.randomToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
             this.randomToolStripMenuItem1.Text = "Random";
             this.randomToolStripMenuItem1.Click += new System.EventHandler(this.randomToolStripMenuItem1_Click);
             // 
             // bBToolStripMenuItem
             // 
             this.bBToolStripMenuItem.Name = "bBToolStripMenuItem";
-            this.bBToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.bBToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.bBToolStripMenuItem.Text = "B and B";
             this.bBToolStripMenuItem.Click += new System.EventHandler(this.bBToolStripMenuItem_Click);
             // 
             // greedyToolStripMenuItem
             // 
             this.greedyToolStripMenuItem.Name = "greedyToolStripMenuItem";
-            this.greedyToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.greedyToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.greedyToolStripMenuItem.Text = "Greedy";
             this.greedyToolStripMenuItem.Click += new System.EventHandler(this.greedyToolStripMenuItem_Click);
             // 
@@ -259,12 +259,12 @@ namespace TSP
             this.toolStripLabel5.Size = new System.Drawing.Size(61, 22);
             this.toolStripLabel5.Text = "Solution #";
             // 
-            // toolStripTextBox1
+            // tbNumberOfSolutions
             // 
-            this.toolStripTextBox1.Enabled = false;
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(15, 25);
-            this.toolStripTextBox1.Text = "--";
+            this.tbNumberOfSolutions.Enabled = false;
+            this.tbNumberOfSolutions.Name = "tbNumberOfSolutions";
+            this.tbNumberOfSolutions.Size = new System.Drawing.Size(15, 25);
+            this.tbNumberOfSolutions.Text = "--";
             // 
             // mainform
             // 
@@ -313,10 +313,7 @@ namespace TSP
         private System.Windows.Forms.ToolStripMenuItem dToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel5;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
-
-
-
+        public System.Windows.Forms.ToolStripTextBox tbNumberOfSolutions;
     }
 }
 

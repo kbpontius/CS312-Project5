@@ -10,7 +10,7 @@ namespace TSP
     {
         private PriorityQueue<State> pq = new PriorityQueue<State>();
         private int visited = 0;
-        private int bssfUpdates = 0;
+        private int bssfUpdates = -1;
         private State _bestStateSoFar = null;
         private double _bssf;
         private City[] _cities;
@@ -67,7 +67,10 @@ namespace TSP
 
         private PathCalculation GeneratePathResult(State solution, City[] cities, double elapsedTime)
         {
-            if (solution == null) { return null; }
+            if (solution == null)
+            {
+                return new PathCalculation(null, elapsedTime, bssfUpdates);
+            }
 
             List<City> pathResult = new List<City>();
 
@@ -78,7 +81,7 @@ namespace TSP
                 currentCity = solution.GetCityTo()[currentCity];
             }
 
-            return new PathCalculation(pathResult.ToArray(), elapsedTime);
+            return new PathCalculation(pathResult.ToArray(), elapsedTime, bssfUpdates);
         }
 
         private bool IsSolution(State child)

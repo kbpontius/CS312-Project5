@@ -307,7 +307,11 @@ namespace TSP
                 bssfCost = bssf.costOfRoute();
             }
 
-            Program.MainForm.tbElapsedTime.Text = (result.ElapsedTime / 1000).ToString();
+            // PLEASE NOTE: If the program times out, then the "TIMED OUT" flag will appear.
+            Program.MainForm.tbElapsedTime.Text = (path == null ? "TIMED OUT: " : "") + result.ElapsedTime / 1000;
+
+            Program.MainForm.tbNumberOfSolutions.Text = (path == null ? 0 : result.NumberOfBSSFUpdates).ToString();
+
             // update the cost of the tour.
             Program.MainForm.tbCostOfTour.Text = " " + bssfCost;
 

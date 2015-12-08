@@ -9,11 +9,13 @@ namespace TSP
     {
         public City[] Cities;
         public double ElapsedTime;
+        public int NumberOfBSSFUpdates;
 
-        public PathCalculation(City[] cities, double elapsedTime)
+        public PathCalculation(City[] cities, double elapsedTime, int bssfUpdates)
         {
             Cities = cities;
             ElapsedTime = elapsedTime;
+            NumberOfBSSFUpdates = bssfUpdates;
         }
     }
 }
