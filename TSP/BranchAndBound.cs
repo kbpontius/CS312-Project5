@@ -9,8 +9,10 @@ namespace TSP
     class BranchAndBound
     {
         private PriorityQueue<State> pq = new PriorityQueue<State>();
-        private int visited = 0;
         private int bssfUpdates = 0;
+        private int _createdStates = 0;
+        private int _maxStatesStored = 0;
+        private int _prunedSates = 0;
         private State _bestStateSoFar = null;
         private double _bssf;
         private City[] _cities;
@@ -21,7 +23,7 @@ namespace TSP
             _bssf = bssf;
             int[] defaultArray = new int[_cities.Length];
             Populate(defaultArray, -1);
-            State state = GenerateReducedMatrix(new State(new Matrix(_cities), -1, defaultArray, defaultArray, 0), 0, 0);
+            State state = GenerateReducedMatrix(new State(new Matrix(_cities), -1, defaultArray, defaultArray, 0));
             pq.Add(0, state);
         }
 
@@ -38,25 +40,41 @@ namespace TSP
                 }
 
                 State state = pq.RemoveMin();
-                visited++;
-                // Console.WriteLine(visited);
 
-                LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(state);
-                State[] children = new State[2] {greatestDifferenceResult.IncludeState, greatestDifferenceResult.ExcludeState};
-
-                foreach(State child in children)
+                if (state.GetLowerBound() < _bssf)
                 {
-                    if (IsSolution(child))
+                    LbDifferenceResult greatestDifferenceResult = CalculateGreatestLBDifference(state);
+                    State[] children = new State[2]
+                    {greatestDifferenceResult.IncludeState, greatestDifferenceResult.ExcludeState};
+
+                    foreach (State child in children)
                     {
-                        bssfUpdates++;
-                        Console.WriteLine("BSSF Updates: " + bssfUpdates);
-                        _bssf = child.GetLowerBound();
-                        _bestStateSoFar = child;
+                        if (IsSolution(child))
+                        {
+                            bssfUpdates++;
+                            _bssf = child.GetLowerBound();
+                            _bestStateSoFar = child;
+                        }
+                        else if (child.GetLowerBound() < _bssf)
+                        {
+                            // Dividing by the number cities in the solution is a great way to prioritize those solutions
+                            // that are further along. This helps the algorithm "dig deeper" into the search.
+                            pq.Add((int)child.GetLowerBound() / (child.GetCitiesInSolution() == 0 ? 1 : child.GetCitiesInSolution()), child);
+
+                            if (pq.Count > _maxStatesStored)
+                            {
+                                _maxStatesStored = pq.Count;
+                            }
+                        }
+                        else
+                        {
+                            _prunedSates++;
+                        }
                     }
-                    else if (child.GetLowerBound() < _bssf)
-                    {
-                        pq.Add((int)child.GetLowerBound(), child);
-                    }
+                }
+                else
+                {
+                    _prunedSates++;
                 }
             }
 
@@ -111,9 +129,19 @@ namespace TSP
                     {
                         LbDifferenceResult lbDifference = GetLbDifference(i, j, state);
 
-                        if (currentGreatestLbDiff == null || lbDifference.LowerBoundDifference > currentGreatestLbDiff.LowerBoundDifference)
+                        if (currentGreatestLbDiff == null ||
+                            lbDifference.LowerBoundDifference > currentGreatestLbDiff.LowerBoundDifference)
                         {
+                            if (currentGreatestLbDiff != null)
+                            {
+                                _prunedSates += 2;
+                            }
+
                             currentGreatestLbDiff = lbDifference;
+                        }
+                        else
+                        {
+                            _prunedSates += 2;
                         }
                     }
                 }
@@ -127,22 +155,22 @@ namespace TSP
         {
             State includeState = new State(state);
             State excludeState = new State(state);
-            // PrintMatrix(includeState.Matrix);
+            _createdStates += 2;
+
             includeState.Matrix = SetupIncludeMatrix(includeState.Matrix, row, col);
             excludeState.Matrix = SetupExcludeMatrix(excludeState.Matrix, row, col);
-            // PrintMatrix(includeState.Matrix);
+
             includeState = DeleteEdges(includeState, row, col);
-            // PrintMatrix(includeState.Matrix);
-            includeState = GenerateReducedMatrix(includeState, row, col);
-            excludeState = GenerateReducedMatrix(excludeState, row, col);
-            // PrintMatrix(includeState.Matrix);
+
+            includeState = GenerateReducedMatrix(includeState);
+            excludeState = GenerateReducedMatrix(excludeState);
 
             double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
 
             return new LbDifferenceResult(includeState, excludeState, lbDifference, row, col);
         }
 
-        private State GenerateReducedMatrix(State state, int row, int col)
+        private State GenerateReducedMatrix(State state)
         {
             Matrix matrix = state.Matrix;
 
