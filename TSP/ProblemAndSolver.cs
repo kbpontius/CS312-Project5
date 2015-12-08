@@ -308,7 +308,7 @@ namespace TSP
             }
 
             // PLEASE NOTE: If the program times out, then the "TIMED OUT" flag will appear.
-            Program.MainForm.tbElapsedTime.Text = (path == null ? "TIMED OUT: " : "") + result.ElapsedTime / 1000;
+            Program.MainForm.tbElapsedTime.Text = (path == null && result.ElapsedTime > (30*1000) ? "TIMED OUT: " : "") + result.ElapsedTime / 1000;
 
             Program.MainForm.tbNumberOfSolutions.Text = (path == null ? 0 : result.NumberOfBSSFUpdates).ToString();
 

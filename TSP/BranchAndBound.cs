@@ -10,7 +10,7 @@ namespace TSP
     {
         private PriorityQueue<State> pq = new PriorityQueue<State>();
         private int visited = 0;
-        private int bssfUpdates = -1;
+        private int bssfUpdates = 0;
         private State _bestStateSoFar = null;
         private double _bssf;
         private City[] _cities;
@@ -21,7 +21,7 @@ namespace TSP
             _bssf = bssf;
             int[] defaultArray = new int[_cities.Length];
             Populate(defaultArray, -1);
-            State state = GenerateReducedMatrix(new State(new Matrix(_cities), -1, defaultArray, defaultArray, 0));
+            State state = GenerateReducedMatrix(new State(new Matrix(_cities), -1, defaultArray, defaultArray, 0), 0, 0);
             pq.Add(0, state);
         }
 
@@ -133,8 +133,8 @@ namespace TSP
             // PrintMatrix(includeState.Matrix);
             includeState = DeleteEdges(includeState, row, col);
             // PrintMatrix(includeState.Matrix);
-            includeState = GenerateReducedMatrix(includeState);
-            excludeState = GenerateReducedMatrix(excludeState);
+            includeState = GenerateReducedMatrix(includeState, row, col);
+            excludeState = GenerateReducedMatrix(excludeState, row, col);
             // PrintMatrix(includeState.Matrix);
 
             double lbDifference = excludeState.GetLowerBound() - includeState.GetLowerBound();
@@ -142,7 +142,7 @@ namespace TSP
             return new LbDifferenceResult(includeState, excludeState, lbDifference, row, col);
         }
 
-        private State GenerateReducedMatrix(State state)
+        private State GenerateReducedMatrix(State state, int row, int col)
         {
             Matrix matrix = state.Matrix;
 
@@ -152,21 +152,24 @@ namespace TSP
             // Reduce row by row
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
-                double rowMin = double.PositiveInfinity;
-
-                for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
+                if (state.GetCityTo()[i] == -1)
                 {
-                    if (matrix.GetMatrix()[i, j] < rowMin)
-                    {
-                        rowMin = matrix.GetMatrix()[i, j];
-                    }
-                }
+                    double rowMin = double.PositiveInfinity;
 
-                if (rowMin >  0 && !double.IsInfinity(rowMin))
-                {
                     for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                     {
-                        matrix.GetMatrix()[i, j] -= rowMin;
+                        if (matrix.GetMatrix()[i, j] < rowMin)
+                        {
+                            rowMin = matrix.GetMatrix()[i, j];
+                        }
+                    }
+
+                    if (!double.IsInfinity(rowMin))
+                    {
+                        for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
+                        {
+                            matrix.GetMatrix()[i, j] -= rowMin;
+                        }
                     }
 
                     sumDifference += rowMin;
@@ -176,21 +179,24 @@ namespace TSP
             // Reduce column by column
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
-                double colMin = double.PositiveInfinity;
-
-                for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
+                if (state.GetCityFrom()[i] == -1)
                 {
-                    if (matrix.GetMatrix()[j, i] < colMin)
-                    {
-                        colMin = matrix.GetMatrix()[j, i];
-                    }
-                }
+                    double colMin = double.PositiveInfinity;
 
-                if (colMin > 0 && !double.IsInfinity(colMin))
-                {
                     for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
                     {
-                        matrix.GetMatrix()[j, i] -= colMin;
+                        if (matrix.GetMatrix()[j, i] < colMin)
+                        {
+                            colMin = matrix.GetMatrix()[j, i];
+                        }
+                    }
+
+                    if (!double.IsInfinity(colMin))
+                    {
+                        for (int j = 0; j < matrix.GetMatrix().GetLength(0); j++)
+                        {
+                            matrix.GetMatrix()[j, i] -= colMin;
+                        }
                     }
 
                     sumDifference += colMin;

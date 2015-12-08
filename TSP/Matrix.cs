@@ -27,7 +27,9 @@ namespace TSP
 
         public Matrix(Matrix matrix)
         {
-            _matrix = (double[,])matrix.GetMatrix().Clone();
+            _matrix = new double[matrix.GetMatrixLength(), matrix.GetMatrixLength()];
+
+            Array.Copy(matrix.GetMatrix(), 0, _matrix, 0, matrix.GetMatrix().Length);
         }
 
         public double[,] GetMatrix()
@@ -35,18 +37,9 @@ namespace TSP
             return _matrix;
         }
 
-        private void PrintMatrix(double[,] matrix)
+        public int GetMatrixLength()
         {
-            Console.WriteLine("------------------------------------");
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(0); j++)
-                {
-                    Console.Write((double.IsPositiveInfinity(matrix[i, j]) ? "INF" : matrix[i, j].ToString()) + "\t");
-                }
-
-                Console.Write("\n");
-            }
+            return _matrix.GetLength(0);
         }
     }
 }

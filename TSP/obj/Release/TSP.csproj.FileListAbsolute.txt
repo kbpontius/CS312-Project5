@@ -10,3 +10,4 @@ C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.Properties
 C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.csproj.GenerateResource.Cache
 C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.exe
 C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.pdb
+C:\Users\Kyle\Documents\BYU\CS312\Project 5 - TSP\TSP\obj\Release\TSP.csprojResolveAssemblyReference.cache
