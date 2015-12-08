@@ -80,9 +80,18 @@ namespace TSP
 
             stopwatch.Stop();
 
+            Console.WriteLine("----------------------------------");
+            Console.WriteLine("Elapsed Time: " + stopwatch.ElapsedMilliseconds);
+            Console.WriteLine("Problem Size: " + _cities.Length);
+            Console.WriteLine("Max States: " + _maxStatesStored);
+            Console.WriteLine("Total Created: " + _createdStates);
+            Console.WriteLine("States Pruned: " + _prunedSates);
+            Console.WriteLine("----------------------------------");
+
             return GeneratePathResult(_bestStateSoFar, _cities, stopwatch.ElapsedMilliseconds);
         }
 
+        // Simply used for generating the results of the solution.
         private PathCalculation GeneratePathResult(State solution, City[] cities, double elapsedTime)
         {
             if (solution == null)
@@ -180,6 +189,7 @@ namespace TSP
             // Reduce row by row
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
+                // Only reduce the row if a cell in this row has NOT already been select as part of the path.
                 if (state.GetCityTo()[i] == -1)
                 {
                     double rowMin = double.PositiveInfinity;
@@ -207,6 +217,7 @@ namespace TSP
             // Reduce column by column
             for (int i = 0; i < matrix.GetMatrix().GetLength(0); i++)
             {
+                // Only reduce the col if a cell in this col has NOT already been select as part of the path.
                 if (state.GetCityFrom()[i] == -1)
                 {
                     double colMin = double.PositiveInfinity;
